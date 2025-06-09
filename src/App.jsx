@@ -2,8 +2,28 @@ import React from "react";
 import { RoadmapViewer } from "./lib";
 import "./App.css";
 
-// Example level component
-const LevelComponent = ({ level, onClick }) => (
+// Example completed level component
+const CompletedLevelComponent = ({ content, onClick }) => (
+  <button
+    onClick={onClick}
+    style={{
+      width: "50px",
+      height: "50px",
+      borderRadius: "50%",
+      background: "red",
+      color: "white",
+      border: "none",
+      fontSize: "18px",
+      cursor: "pointer",
+      boxShadow: "0 0 10px rgba(46, 204, 113, 0.5)",
+    }}
+  >
+    {content}
+  </button>
+);
+
+// Example future level component
+const FutureLevelComponent = ({ content, onClick }) => (
   <button
     onClick={onClick}
     style={{
@@ -17,27 +37,7 @@ const LevelComponent = ({ level, onClick }) => (
       cursor: "pointer",
     }}
   >
-    {level}
-  </button>
-);
-
-// Example active level component
-const ActiveLevelComponent = ({ level, onClick }) => (
-  <button
-    onClick={onClick}
-    style={{
-      width: "50px",
-      height: "50px",
-      borderRadius: "50%",
-      background: "#2ecc71",
-      color: "white",
-      border: "none",
-      fontSize: "18px",
-      cursor: "pointer",
-      boxShadow: "0 0 10px rgba(46, 204, 113, 0.5)",
-    }}
-  >
-    {level}
+    {content}
   </button>
 );
 
@@ -102,9 +102,7 @@ const DiagonalRightDownPathComponent = () => (
         width: "8px",
         height: "100%",
         backgroundColor: "#95a5a6",
-        position: "absolute",
         transform: "rotate(45deg)",
-        transformOrigin: "top left",
         top: "0",
         left: "50%",
       }}
@@ -128,9 +126,7 @@ const DiagonalLeftDownPathComponent = () => (
         width: "8px",
         height: "100%",
         backgroundColor: "#95a5a6",
-        position: "absolute",
         transform: "rotate(-45deg)",
-        transformOrigin: "top right",
         top: "0",
         right: "50%",
       }}
@@ -138,8 +134,8 @@ const DiagonalLeftDownPathComponent = () => (
   </div>
 );
 
-// Active path components
-const ActiveHorizontalPathComponent = () => (
+// Completed path components
+const CompletedHorizontalPathComponent = () => (
   <div
     style={{
       width: "100%",
@@ -162,7 +158,7 @@ const ActiveHorizontalPathComponent = () => (
   </div>
 );
 
-const ActiveVerticalPathComponent = () => (
+const CompletedVerticalPathComponent = () => (
   <div
     style={{
       width: "100%",
@@ -185,7 +181,7 @@ const ActiveVerticalPathComponent = () => (
   </div>
 );
 
-const ActiveDiagonalRightDownPathComponent = () => (
+const CompletedDiagonalRightDownPathComponent = () => (
   <div
     style={{
       width: "100%",
@@ -201,9 +197,7 @@ const ActiveDiagonalRightDownPathComponent = () => (
         width: "8px",
         height: "100%",
         backgroundColor: "#2ecc71",
-        position: "absolute",
         transform: "rotate(45deg)",
-        transformOrigin: "top left",
         top: "0",
         left: "50%",
         boxShadow: "0 0 5px rgba(46, 204, 113, 0.5)",
@@ -212,7 +206,7 @@ const ActiveDiagonalRightDownPathComponent = () => (
   </div>
 );
 
-const ActiveDiagonalLeftDownPathComponent = () => (
+const CompletedDiagonalLeftDownPathComponent = () => (
   <div
     style={{
       width: "100%",
@@ -228,9 +222,7 @@ const ActiveDiagonalLeftDownPathComponent = () => (
         width: "8px",
         height: "100%",
         backgroundColor: "#2ecc71",
-        position: "absolute",
         transform: "rotate(-45deg)",
-        transformOrigin: "top right",
         top: "0",
         right: "50%",
         boxShadow: "0 0 5px rgba(46, 204, 113, 0.5)",
@@ -240,67 +232,77 @@ const ActiveDiagonalLeftDownPathComponent = () => (
 );
 
 function App() {
-  const [activeLevel, setActiveLevel] = React.useState(1);
+  const [currentLevel, setCurrentLevel] = React.useState(1);
 
-  // Example roadmap positions with different path types
+  // Example roadmap positions with different path types and level content
   const positions = {
     "level-1": {
       x: 1,
       y: 0,
       type: "level",
-      state: activeLevel >= 1 ? "active" : "passive",
+      status: currentLevel >= 1 ? "completed" : "future",
+      levelContent: "1",
+      order: 1,
     },
     "path-1-2": {
       x: 1,
       y: 1,
       type: "path",
-      state: activeLevel >= 2 ? "active" : "passive",
+      status: currentLevel >= 2 ? "completed" : "future",
       pathComponent: "vertical",
     },
     "level-2": {
       x: 1,
       y: 2,
       type: "level",
-      state: activeLevel >= 2 ? "active" : "passive",
+      status: currentLevel >= 2 ? "completed" : "future",
+      levelContent: "2",
+      order: 2,
     },
     "path-2-3": {
       x: 2,
       y: 3,
       type: "path",
-      state: activeLevel >= 3 ? "active" : "passive",
+      status: currentLevel >= 3 ? "completed" : "future",
       pathComponent: "diagonalLeftDown",
     },
     "level-3": {
       x: 3,
       y: 4,
       type: "level",
-      state: activeLevel >= 3 ? "active" : "passive",
+      status: currentLevel >= 3 ? "completed" : "future",
+      levelContent: "A",
+      order: 3,
     },
     "path-3-4": {
       x: 2,
       y: 5,
       type: "path",
-      state: activeLevel >= 4 ? "active" : "passive",
+      status: currentLevel >= 4 ? "completed" : "future",
       pathComponent: "diagonalRightDown",
     },
     "level-4": {
       x: 1,
       y: 6,
       type: "level",
-      state: activeLevel >= 4 ? "active" : "passive",
+      status: currentLevel >= 4 ? "completed" : "future",
+      levelContent: "B",
+      order: 4,
     },
     "path-4-5": {
       x: 1,
       y: 7,
       type: "path",
-      state: activeLevel >= 5 ? "active" : "passive",
+      status: currentLevel >= 5 ? "completed" : "future",
       pathComponent: "vertical",
     },
     "level-5": {
       x: 1,
       y: 8,
       type: "level",
-      state: activeLevel >= 5 ? "active" : "passive",
+      status: currentLevel >= 5 ? "completed" : "future",
+      levelContent: "aaa",
+      order: 5,
     },
   };
 
@@ -312,27 +314,31 @@ function App() {
     diagonalLeftDown: <DiagonalLeftDownPathComponent />,
   };
 
-  // Active path components collection
-  const activePathComponents = {
-    horizontal: <ActiveHorizontalPathComponent />,
-    vertical: <ActiveVerticalPathComponent />,
-    diagonalRightDown: <ActiveDiagonalRightDownPathComponent />,
-    diagonalLeftDown: <ActiveDiagonalLeftDownPathComponent />,
+  // Completed path components collection
+  const completedPathComponents = {
+    horizontal: <CompletedHorizontalPathComponent />,
+    vertical: <CompletedVerticalPathComponent />,
+    diagonalRightDown: <CompletedDiagonalRightDownPathComponent />,
+    diagonalLeftDown: <CompletedDiagonalLeftDownPathComponent />,
   };
 
-  const handleLevelClick = (level) => {
-    setActiveLevel(level);
+  const handleLevelClick = (order) => {
+    setCurrentLevel(order);
   };
 
   return (
     <div className="app">
       <h1>Roadmap Builder Example</h1>
       <div className="controls">
-        <p>Current Level: {activeLevel}</p>
-        <button onClick={() => setActiveLevel((prev) => Math.max(1, prev - 1))}>
+        <p>Current Level: {currentLevel}</p>
+        <button
+          onClick={() => setCurrentLevel((prev) => Math.max(1, prev - 1))}
+        >
           Previous Level
         </button>
-        <button onClick={() => setActiveLevel((prev) => Math.min(5, prev + 1))}>
+        <button
+          onClick={() => setCurrentLevel((prev) => Math.min(5, prev + 1))}
+        >
           Next Level
         </button>
       </div>
@@ -341,18 +347,12 @@ function App() {
           matrixWidth={5}
           matrixHeight={9}
           positions={positions}
-          levelComponent={
-            <LevelComponent level={1} onClick={() => handleLevelClick(1)} />
-          }
           pathComponents={pathComponents}
-          activeLevelComponent={
-            <ActiveLevelComponent
-              level={1}
-              onClick={() => handleLevelClick(1)}
-            />
-          }
-          activePathComponents={activePathComponents}
-          cellWidth={100}
+          completedLevelComponent={<CompletedLevelComponent />}
+          completedPathComponents={completedPathComponents}
+          futureLevelComponent={<FutureLevelComponent />}
+          onLevelClick={handleLevelClick}
+          cellWidth={80}
           cellHeight={80}
         />
       </div>

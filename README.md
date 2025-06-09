@@ -45,15 +45,15 @@ const VerticalPathComponent = () => (
 function MyRoadmap() {
   // Define your roadmap positions
   const positions = {
-    "level-1": { x: 0, y: 0, type: "level", state: "active" },
+    "level-1": { x: 0, y: 0, type: "level", status: "completed" },
     "path-1-2": {
       x: 0,
       y: 1,
       type: "path",
-      state: "active",
+      status: "completed",
       pathComponent: "vertical",
     },
-    "level-2": { x: 0, y: 2, type: "level", state: "passive" },
+    "level-2": { x: 0, y: 2, type: "level", status: "future" },
     // Add more levels and paths as needed
   };
 
@@ -84,19 +84,38 @@ function MyRoadmap() {
 
 ## Props
 
-| Prop                  | Type          | Required | Default | Description                                                  |
-| --------------------- | ------------- | -------- | ------- | ------------------------------------------------------------ |
-| matrixWidth           | number        | Yes      | -       | Width of the matrix grid                                     |
-| matrixHeight          | number        | Yes      | -       | Height of the matrix grid                                    |
-| positions             | object        | Yes      | -       | Object defining the positions and states of levels and paths |
-| levelComponent        | React.Element | Yes      | -       | Component to render for levels                               |
-| pathComponents        | object        | No       | -       | Object containing path components mapped by key              |
-| cellWidth             | number        | No       | 100     | Width of each cell in pixels                                 |
-| cellHeight            | number        | No       | 100     | Height of each cell in pixels                                |
-| activeLevelComponent  | React.Element | No       | -       | Component to render for active levels                        |
-| activePathComponents  | object        | No       | -       | Object containing active path components mapped by key       |
-| passiveLevelComponent | React.Element | No       | -       | Component to render for passive levels                       |
-| passivePathComponents | object        | No       | -       | Object containing passive path components mapped by key      |
+| Prop                    | Type          | Required | Default | Description                                                                        |
+| ----------------------- | ------------- | -------- | ------- | ---------------------------------------------------------------------------------- |
+| matrixWidth             | number        | Yes      | -       | Width of the matrix grid                                                           |
+| matrixHeight            | number        | Yes      | -       | Height of the matrix grid                                                          |
+| positions               | object        | Yes      | -       | Object defining the positions and states of levels and paths                       |
+| levelComponent          | React.Element | No       | -       | Component to render for levels (fallback)                                          |
+| pathComponents          | object        | No       | -       | Object containing path components mapped by key                                    |
+| cellWidth               | number        | No       | 100     | Width of each cell in pixels                                                       |
+| cellHeight              | number        | No       | 100     | Height of each cell in pixels                                                      |
+| completedLevelComponent | React.Element | No       | -       | Component to render for completed levels                                           |
+| completedPathComponents | object        | No       | -       | Object containing completed path components mapped by key                          |
+| futureLevelComponent    | React.Element | No       | -       | Component to render for future levels                                              |
+| futurePathComponents    | object        | No       | -       | Object containing future path components mapped by key                             |
+| onLevelClick            | function      | No       | -       | Callback function when a level is clicked, receives the level's order as parameter |
+
+## Level Components
+
+The level components (levelComponent, completedLevelComponent, futureLevelComponent) will receive the following props:
+
+| Prop    | Type     | Description                                                                       |
+| ------- | -------- | --------------------------------------------------------------------------------- |
+| content | any      | The content to display in the level (from the levelContent property in positions) |
+| order   | number   | The numeric order of the level (from the order property in positions)             |
+| onClick | function | Click handler function                                                            |
+
+Example level component:
+
+```jsx
+const MyLevelComponent = ({ content, order, onClick }) => (
+  <button onClick={onClick}>{content}</button>
+);
+```
 
 ## Positions Object
 
@@ -107,8 +126,49 @@ The positions object defines where each level and path should be placed in the m
   x: number,       // X coordinate in the matrix (0-based)
   y: number,       // Y coordinate in the matrix (0-based)
   type: string,    // 'level' or 'path'
-  state: string,   // 'active' or 'passive'
-  pathComponent: string // (optional, for paths only) The key of the path component to use from pathComponents
+  status: string,  // 'completed' or 'future'
+  levelContent: string|number, // (for level type only) The content to display in the level (can be text or numbers)
+  order: number,   // (for level type only) The numeric order of the level for progression
+  pathComponent: string // (for path type only) The key of the path component to use from pathComponents
+}
+```
+
+For example:
+
+```js
+// Level position with numeric content (completed)
+{
+  'level-1': {
+    x: 0,
+    y: 0,
+    type: 'level',
+    status: 'completed',
+    levelContent: 1,
+    order: 1
+  }
+}
+
+// Level position with text content (future)
+{
+  'level-special': {
+    x: 2,
+    y: 4,
+    type: 'level',
+    status: 'future',
+    levelContent: 'Bonus',
+    order: 3
+  }
+}
+
+// Path position
+{
+  'path-1-2': {
+    x: 0,
+    y: 1,
+    type: 'path',
+    status: 'completed',
+    pathComponent: 'vertical'
+  }
 }
 ```
 
@@ -131,7 +191,7 @@ const positions = {
     x: 0,
     y: 1,
     type: "path",
-    state: "active",
+    status: "completed",
     pathComponent: "vertical",
   },
 };
@@ -143,18 +203,18 @@ const positions = {
 />;
 ```
 
-You can also provide separate components for active and passive states:
+You can also provide separate components for completed and future states:
 
 ```jsx
-const activePathComponents = {
-  horizontal: <ActiveHorizontalPathComponent />,
-  vertical: <ActiveVerticalPathComponent />,
+const completedPathComponents = {
+  horizontal: <CompletedHorizontalPathComponent />,
+  vertical: <CompletedVerticalPathComponent />,
 };
 
 <RoadmapViewer
   // ...other props
   pathComponents={pathComponents}
-  activePathComponents={activePathComponents}
+  completedPathComponents={completedPathComponents}
 />;
 ```
 
@@ -164,23 +224,23 @@ const activePathComponents = {
 
 ```jsx
 const positions = {
-  "level-1": { x: 0, y: 0, type: "level", state: "active" },
+  "level-1": { x: 0, y: 0, type: "level", status: "completed" },
   "path-1-2": {
     x: 0,
     y: 1,
     type: "path",
-    state: "active",
+    status: "completed",
     pathComponent: "vertical",
   },
-  "level-2": { x: 0, y: 2, type: "level", state: "active" },
+  "level-2": { x: 0, y: 2, type: "level", status: "completed" },
   "path-2-3": {
     x: 0,
     y: 3,
     type: "path",
-    state: "passive",
+    status: "future",
     pathComponent: "vertical",
   },
-  "level-3": { x: 0, y: 4, type: "level", state: "passive" },
+  "level-3": { x: 0, y: 4, type: "level", status: "future" },
 };
 ```
 
@@ -188,23 +248,23 @@ const positions = {
 
 ```jsx
 const positions = {
-  "level-1": { x: 1, y: 0, type: "level", state: "active" },
+  "level-1": { x: 1, y: 0, type: "level", status: "completed" },
   "path-1-2a": {
     x: 0,
     y: 1,
     type: "path",
-    state: "active",
+    status: "completed",
     pathComponent: "diagonalLeftDown",
   },
   "path-1-2b": {
     x: 2,
     y: 1,
     type: "path",
-    state: "passive",
+    status: "future",
     pathComponent: "diagonalRightDown",
   },
-  "level-2a": { x: 0, y: 2, type: "level", state: "active" },
-  "level-2b": { x: 2, y: 2, type: "level", state: "passive" },
+  "level-2a": { x: 0, y: 2, type: "level", status: "completed" },
+  "level-2b": { x: 2, y: 2, type: "level", status: "future" },
 };
 ```
 

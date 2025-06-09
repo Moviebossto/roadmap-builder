@@ -15,10 +15,11 @@ const RoadmapViewer = ({
   pathComponents,
   cellWidth = 100,
   cellHeight = 100,
-  activeLevelComponent,
-  activePathComponents,
-  passiveLevelComponent,
-  passivePathComponents,
+  completedLevelComponent,
+  completedPathComponents,
+  futureLevelComponent,
+  futurePathComponents,
+  onLevelClick,
 }) => {
   // Create a matrix with the specified dimensions
   const matrix = Array(matrixHeight)
@@ -31,69 +32,82 @@ const RoadmapViewer = ({
       x,
       y,
       type,
-      state = "passive",
+      status = "future",
       pathComponent = "default",
+      levelContent,
+      order,
     } = position;
 
     if (x >= 0 && x < matrixWidth && y >= 0 && y < matrixHeight) {
-      matrix[y][x] = { key, type, state, pathComponent };
+      matrix[y][x] = { key, type, status, pathComponent, levelContent, order };
     }
   });
 
   const renderCell = (cell) => {
     if (!cell) return <div className="roadmap-empty-cell" />;
 
-    const { key, type, state, pathComponent = "default" } = cell;
+    const {
+      key,
+      type,
+      status,
+      pathComponent = "default",
+      levelContent,
+      order,
+    } = cell;
 
     if (type === "level") {
-      if (state === "active" && activeLevelComponent) {
-        return React.cloneElement(activeLevelComponent, { key });
-      } else if (state === "passive" && passiveLevelComponent) {
-        return React.cloneElement(passiveLevelComponent, { key });
+      const levelProps = {
+        key,
+        content: levelContent,
+        order,
+        onClick: () => onLevelClick && onLevelClick(order),
+      };
+
+      if (status === "completed" && completedLevelComponent) {
+        return React.cloneElement(completedLevelComponent, levelProps);
+      } else if (status === "future" && futureLevelComponent) {
+        return React.cloneElement(futureLevelComponent, levelProps);
+      } else if (levelComponent) {
+        return (
+          <div className={`roadmap-level roadmap-level-${status}`}>
+            {React.cloneElement(levelComponent, levelProps)}
+          </div>
+        );
       } else {
         return (
           <div
-            className={`roadmap-level ${
-              state === "passive" ? "roadmap-passive" : ""
-            }`}
+            className={`roadmap-level roadmap-level-${status}`}
+            onClick={() => onLevelClick && onLevelClick(order)}
           >
-            {React.cloneElement(levelComponent, { key })}
+            {levelContent}
           </div>
         );
       }
     } else if (type === "path") {
       if (
-        state === "active" &&
-        activePathComponents &&
-        activePathComponents[pathComponent]
+        status === "completed" &&
+        completedPathComponents &&
+        completedPathComponents[pathComponent]
       ) {
-        return React.cloneElement(activePathComponents[pathComponent], { key });
-      } else if (
-        state === "passive" &&
-        passivePathComponents &&
-        passivePathComponents[pathComponent]
-      ) {
-        return React.cloneElement(passivePathComponents[pathComponent], {
+        return React.cloneElement(completedPathComponents[pathComponent], {
           key,
         });
+      } else if (
+        status === "future" &&
+        futurePathComponents &&
+        futurePathComponents[pathComponent]
+      ) {
+        return React.cloneElement(futurePathComponents[pathComponent], { key });
       } else if (pathComponents && pathComponents[pathComponent]) {
         return (
-          <div
-            className={`roadmap-path ${
-              state === "passive" ? "roadmap-passive" : ""
-            }`}
-          >
+          <div className={`roadmap-path roadmap-path-${status}`}>
             {React.cloneElement(pathComponents[pathComponent], { key })}
           </div>
         );
       } else {
         return (
           <div
-            className={`
-              roadmap-path 
-              roadmap-path-default
-              ${state === "passive" ? "roadmap-passive" : ""}
-            `}
+            className={`roadmap-path roadmap-path-default roadmap-path-${status}`}
           />
         );
       }
@@ -131,14 +145,15 @@ RoadmapViewer.propTypes = {
   matrixWidth: PropTypes.number.isRequired,
   matrixHeight: PropTypes.number.isRequired,
   positions: PropTypes.object.isRequired,
-  levelComponent: PropTypes.element.isRequired,
+  levelComponent: PropTypes.element,
   pathComponents: PropTypes.object,
   cellWidth: PropTypes.number,
   cellHeight: PropTypes.number,
-  activeLevelComponent: PropTypes.element,
-  activePathComponents: PropTypes.object,
-  passiveLevelComponent: PropTypes.element,
-  passivePathComponents: PropTypes.object,
+  completedLevelComponent: PropTypes.element,
+  completedPathComponents: PropTypes.object,
+  futureLevelComponent: PropTypes.element,
+  futurePathComponents: PropTypes.object,
+  onLevelClick: PropTypes.func,
 };
 
 export default RoadmapViewer;
