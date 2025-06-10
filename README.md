@@ -13,7 +13,7 @@ If you are developing a production application, we recommend using TypeScript wi
 
 # Roadmap Builder
 
-A React component library for creating interactive roadmaps, perfect for educational applications, learning platforms, or game progression systems.
+A flexible React component library for building and displaying interactive roadmaps.
 
 ## Installation
 
@@ -23,254 +23,297 @@ npm install roadmap-builder
 yarn add roadmap-builder
 ```
 
+## Features
+
+- Interactive roadmap display with customizable components
+- Visual roadmap builder tool
+- Support for different path types (horizontal, vertical, diagonal)
+- Customizable level and path components
+- Progress tracking with completed/future states
+
 ## Usage
 
+### Displaying a Roadmap
+
 ```jsx
+import React from "react";
 import { RoadmapViewer } from "roadmap-builder";
 
-// Your level component
-const LevelComponent = ({ level, onClick }) => (
-  <button onClick={onClick}>{level}</button>
+// Custom components
+const CompletedLevelComponent = ({ content, onClick }) => (
+  <button
+    onClick={onClick}
+    style={{
+      /* Your styles here */
+      background: "green",
+      color: "white",
+      borderRadius: "50%",
+    }}
+  >
+    {content}
+  </button>
+);
+
+const FutureLevelComponent = ({ content, onClick }) => (
+  <button
+    onClick={onClick}
+    style={{
+      /* Your styles here */
+      background: "blue",
+      color: "white",
+      borderRadius: "50%",
+    }}
+  >
+    {content}
+  </button>
 );
 
 // Path components
-const HorizontalPathComponent = () => (
-  <div style={{ width: "100%", height: "5px", background: "#ddd" }} />
-);
+const pathComponents = {
+  horizontal: <YourHorizontalPathComponent />,
+  vertical: <YourVerticalPathComponent />,
+  diagonalRightDown: <YourDiagonalRightDownComponent />,
+  diagonalLeftDown: <YourDiagonalLeftDownComponent />,
+};
 
-const VerticalPathComponent = () => (
-  <div style={{ width: "5px", height: "100%", background: "#ddd" }} />
-);
+// Completed path components
+const completedPathComponents = {
+  horizontal: <YourCompletedHorizontalPathComponent />,
+  vertical: <YourCompletedVerticalPathComponent />,
+  diagonalRightDown: <YourCompletedDiagonalRightDownComponent />,
+  diagonalLeftDown: <YourCompletedDiagonalLeftDownComponent />,
+};
 
-function MyRoadmap() {
-  // Define your roadmap positions
-  const positions = {
-    "level-1": { x: 0, y: 0, type: "level", status: "completed" },
-    "path-1-2": {
-      x: 0,
-      y: 1,
-      type: "path",
-      status: "completed",
-      pathComponent: "vertical",
-    },
-    "level-2": { x: 0, y: 2, type: "level", status: "future" },
-    // Add more levels and paths as needed
-  };
+// Example roadmap positions
+const positions = {
+  "level-1": {
+    x: 1,
+    y: 0,
+    type: "level",
+    status: "completed",
+    levelContent: "1",
+    order: 1,
+  },
+  "path-1-2": {
+    x: 1,
+    y: 1,
+    type: "path",
+    status: "completed",
+    pathComponent: "vertical",
+  },
+  "level-2": {
+    x: 1,
+    y: 2,
+    type: "level",
+    status: "completed",
+    levelContent: "2",
+    order: 2,
+  },
+  // Add more positions as needed
+};
 
-  // Collection of path components
-  const pathComponents = {
-    horizontal: <HorizontalPathComponent />,
-    vertical: <VerticalPathComponent />,
+function App() {
+  const handleLevelClick = (order) => {
+    console.log(`Level ${order} clicked`);
   };
 
   return (
     <RoadmapViewer
-      matrixWidth={3}
-      matrixHeight={5}
+      matrixWidth={5}
+      matrixHeight={9}
       positions={positions}
-      levelComponent={
-        <LevelComponent
-          level={1}
-          onClick={() => console.log("Level 1 clicked")}
-        />
-      }
       pathComponents={pathComponents}
-      cellWidth={100}
+      completedPathComponents={completedPathComponents}
+      completedLevelComponent={<CompletedLevelComponent />}
+      futureLevelComponent={<FutureLevelComponent />}
+      onLevelClick={handleLevelClick}
+      cellWidth={80}
       cellHeight={80}
     />
   );
 }
 ```
 
-## Props
-
-| Prop                    | Type          | Required | Default | Description                                                                        |
-| ----------------------- | ------------- | -------- | ------- | ---------------------------------------------------------------------------------- |
-| matrixWidth             | number        | Yes      | -       | Width of the matrix grid                                                           |
-| matrixHeight            | number        | Yes      | -       | Height of the matrix grid                                                          |
-| positions               | object        | Yes      | -       | Object defining the positions and states of levels and paths                       |
-| levelComponent          | React.Element | No       | -       | Component to render for levels (fallback)                                          |
-| pathComponents          | object        | No       | -       | Object containing path components mapped by key                                    |
-| cellWidth               | number        | No       | 100     | Width of each cell in pixels                                                       |
-| cellHeight              | number        | No       | 100     | Height of each cell in pixels                                                      |
-| completedLevelComponent | React.Element | No       | -       | Component to render for completed levels                                           |
-| completedPathComponents | object        | No       | -       | Object containing completed path components mapped by key                          |
-| futureLevelComponent    | React.Element | No       | -       | Component to render for future levels                                              |
-| futurePathComponents    | object        | No       | -       | Object containing future path components mapped by key                             |
-| onLevelClick            | function      | No       | -       | Callback function when a level is clicked, receives the level's order as parameter |
-
-## Level Components
-
-The level components (levelComponent, completedLevelComponent, futureLevelComponent) will receive the following props:
-
-| Prop    | Type     | Description                                                                       |
-| ------- | -------- | --------------------------------------------------------------------------------- |
-| content | any      | The content to display in the level (from the levelContent property in positions) |
-| order   | number   | The numeric order of the level (from the order property in positions)             |
-| onClick | function | Click handler function                                                            |
-
-Example level component:
+### Using the Roadmap Builder
 
 ```jsx
-const MyLevelComponent = ({ content, order, onClick }) => (
-  <button onClick={onClick}>{content}</button>
-);
+import React, { useState } from "react";
+import { RoadmapBuilder, RoadmapViewer } from "roadmap-builder";
+
+function App() {
+  const [positions, setPositions] = useState({});
+
+  // Define your custom components
+  const pathComponents = {
+    horizontal: <YourHorizontalPathComponent />,
+    vertical: <YourVerticalPathComponent />,
+    // ...
+  };
+
+  const completedPathComponents = {
+    horizontal: <YourCompletedHorizontalPathComponent />,
+    vertical: <YourCompletedVerticalPathComponent />,
+    // ...
+  };
+
+  const handleSave = (newPositions) => {
+    setPositions(newPositions);
+    // You can also save these positions to your backend or local storage
+  };
+
+  return (
+    <div>
+      <RoadmapBuilder
+        initialMatrixWidth={5}
+        initialMatrixHeight={9}
+        initialPositions={positions}
+        pathComponents={pathComponents}
+        completedPathComponents={completedPathComponents}
+        completedLevelComponent={<YourCompletedLevelComponent />}
+        futureLevelComponent={<YourFutureLevelComponent />}
+        cellWidth={80}
+        cellHeight={80}
+        onSave={handleSave}
+      />
+
+      {/* You can display the roadmap with the saved positions */}
+      <RoadmapViewer
+        matrixWidth={5}
+        matrixHeight={9}
+        positions={positions}
+        pathComponents={pathComponents}
+        completedPathComponents={completedPathComponents}
+        completedLevelComponent={<YourCompletedLevelComponent />}
+        futureLevelComponent={<YourFutureLevelComponent />}
+        onLevelClick={(order) => console.log(`Level ${order} clicked`)}
+        cellWidth={80}
+        cellHeight={80}
+      />
+    </div>
+  );
+}
 ```
 
-## Positions Object
+## API Reference
 
-The positions object defines where each level and path should be placed in the matrix. Each key in the object represents a unique identifier for the element, and its value is an object with the following properties:
+### RoadmapViewer Props
+
+| Prop                      | Type     | Required | Description                                                                  |
+| ------------------------- | -------- | -------- | ---------------------------------------------------------------------------- |
+| `matrixWidth`             | number   | Yes      | Width of the matrix grid                                                     |
+| `matrixHeight`            | number   | Yes      | Height of the matrix grid                                                    |
+| `positions`               | object   | Yes      | Object containing positions and properties of levels and paths               |
+| `pathComponents`          | object   | Yes      | Components to render for different path types                                |
+| `completedPathComponents` | object   | Yes      | Components to render for completed path types                                |
+| `completedLevelComponent` | element  | Yes      | Component to render for completed levels                                     |
+| `futureLevelComponent`    | element  | Yes      | Component to render for future levels                                        |
+| `onLevelClick`            | function | No       | Callback function when a level is clicked, receives level order as parameter |
+| `cellWidth`               | number   | No       | Width of each matrix cell in pixels (default: 100)                           |
+| `cellHeight`              | number   | No       | Height of each matrix cell in pixels (default: 100)                          |
+
+### RoadmapBuilder Props
+
+| Prop                      | Type     | Required | Description                                        |
+| ------------------------- | -------- | -------- | -------------------------------------------------- |
+| `initialMatrixWidth`      | number   | No       | Initial width of the matrix grid (default: 5)      |
+| `initialMatrixHeight`     | number   | No       | Initial height of the matrix grid (default: 9)     |
+| `initialPositions`        | object   | No       | Initial positions for the builder (default: {})    |
+| `pathComponents`          | object   | Yes      | Components to render for different path types      |
+| `completedPathComponents` | object   | Yes      | Components to render for completed path types      |
+| `completedLevelComponent` | element  | Yes      | Component to render for completed levels           |
+| `futureLevelComponent`    | element  | Yes      | Component to render for future levels              |
+| `onSave`                  | function | No       | Callback function when positions are saved         |
+| `cellWidth`               | number   | No       | Width of each matrix cell in pixels (default: 80)  |
+| `cellHeight`              | number   | No       | Height of each matrix cell in pixels (default: 80) |
+
+## Position Object Structure
+
+The position object uses keys as unique identifiers and contains the following properties:
+
+For levels:
 
 ```js
 {
-  x: number,       // X coordinate in the matrix (0-based)
-  y: number,       // Y coordinate in the matrix (0-based)
-  type: string,    // 'level' or 'path'
-  status: string,  // 'completed' or 'future'
-  levelContent: string|number, // (for level type only) The content to display in the level (can be text or numbers)
-  order: number,   // (for level type only) The numeric order of the level for progression
-  pathComponent: string // (for path type only) The key of the path component to use from pathComponents
+  x: number, // x position in the matrix
+  y: number, // y position in the matrix
+  type: "level", // type of the node
+  status: "completed" | "future", // status of the level
+  levelContent: string, // content to display in the level
+  order: number // order/sequence number of the level
 }
 ```
 
-For example:
+For paths:
 
 ```js
-// Level position with numeric content (completed)
 {
-  'level-1': {
-    x: 0,
-    y: 0,
-    type: 'level',
-    status: 'completed',
-    levelContent: 1,
-    order: 1
-  }
-}
-
-// Level position with text content (future)
-{
-  'level-special': {
-    x: 2,
-    y: 4,
-    type: 'level',
-    status: 'future',
-    levelContent: 'Bonus',
-    order: 3
-  }
-}
-
-// Path position
-{
-  'path-1-2': {
-    x: 0,
-    y: 1,
-    type: 'path',
-    status: 'completed',
-    pathComponent: 'vertical'
-  }
+  x: number, // x position in the matrix
+  y: number, // y position in the matrix
+  type: "path", // type of the node
+  status: "completed" | "future", // status of the path
+  pathComponent: "horizontal" | "vertical" | "diagonalRightDown" | "diagonalLeftDown" // type of path
 }
 ```
 
-### Path Components
+## Dynamic Status Changes
 
-Instead of using predefined orientations, you can create your own path components and provide them as an object:
+You can dynamically update the status of levels and paths based on user progress or other conditions. This allows creating interactive roadmaps that visually update as users progress.
 
-```jsx
-// Define path components
-const pathComponents = {
-  horizontal: <HorizontalPathComponent />,
-  vertical: <VerticalPathComponent />,
-  diagonalRight: <DiagonalRightComponent />,
-  // ... add as many as you need
-};
-
-// Use them in your positions
-const positions = {
-  "path-1-2": {
-    x: 0,
-    y: 1,
-    type: "path",
-    status: "completed",
-    pathComponent: "vertical",
-  },
-};
-
-// Then provide them to RoadmapViewer
-<RoadmapViewer
-  // ...other props
-  pathComponents={pathComponents}
-/>;
-```
-
-You can also provide separate components for completed and future states:
+### Example with Current Level Tracking
 
 ```jsx
-const completedPathComponents = {
-  horizontal: <CompletedHorizontalPathComponent />,
-  vertical: <CompletedVerticalPathComponent />,
-};
+function App() {
+  // Track the current level (could be from user progress, API data, etc.)
+  const [currentLevel, setCurrentLevel] = useState(1);
 
-<RoadmapViewer
-  // ...other props
-  pathComponents={pathComponents}
-  completedPathComponents={completedPathComponents}
-/>;
+  // Define positions with dynamic status based on currentLevel
+  const positions = {
+    "level-1": {
+      x: 1,
+      y: 0,
+      type: "level",
+      status: currentLevel >= 1 ? "completed" : "future", // Conditional status
+      levelContent: "1",
+      order: 1,
+    },
+    "path-1-2": {
+      x: 1,
+      y: 1,
+      type: "path",
+      status: currentLevel >= 2 ? "completed" : "future", // Conditional status
+      pathComponent: "vertical",
+    },
+    "level-2": {
+      x: 1,
+      y: 2,
+      type: "level",
+      status: currentLevel >= 2 ? "completed" : "future", // Conditional status
+      levelContent: "2",
+      order: 2,
+    },
+    // More positions...
+  };
+
+  // Level click handler that updates progress
+  const handleLevelClick = (order) => {
+    setCurrentLevel(order);
+  };
+
+  return (
+    <RoadmapViewer
+      positions={positions}
+      onLevelClick={handleLevelClick}
+      // Other props...
+    />
+  );
+}
 ```
 
-## Examples
-
-### Creating a simple linear roadmap
-
-```jsx
-const positions = {
-  "level-1": { x: 0, y: 0, type: "level", status: "completed" },
-  "path-1-2": {
-    x: 0,
-    y: 1,
-    type: "path",
-    status: "completed",
-    pathComponent: "vertical",
-  },
-  "level-2": { x: 0, y: 2, type: "level", status: "completed" },
-  "path-2-3": {
-    x: 0,
-    y: 3,
-    type: "path",
-    status: "future",
-    pathComponent: "vertical",
-  },
-  "level-3": { x: 0, y: 4, type: "level", status: "future" },
-};
-```
-
-### Creating a branching roadmap
-
-```jsx
-const positions = {
-  "level-1": { x: 1, y: 0, type: "level", status: "completed" },
-  "path-1-2a": {
-    x: 0,
-    y: 1,
-    type: "path",
-    status: "completed",
-    pathComponent: "diagonalLeftDown",
-  },
-  "path-1-2b": {
-    x: 2,
-    y: 1,
-    type: "path",
-    status: "future",
-    pathComponent: "diagonalRightDown",
-  },
-  "level-2a": { x: 0, y: 2, type: "level", status: "completed" },
-  "level-2b": { x: 2, y: 2, type: "level", status: "future" },
-};
-```
+With this approach, whenever `currentLevel` changes, the roadmap will automatically update with completed and future sections visually distinguished.
 
 ## License
 
-MIT
+MIT © [Your Name]
 
 ## Component Props
 

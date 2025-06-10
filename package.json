@@ -1,52 +1,62 @@
 {
   "name": "roadmap-builder",
-  "version": "0.1.0",
-  "description": "A React component for building and displaying roadmaps",
-  "type": "module",
-  "main": "dist/roadmap-builder.umd.js",
-  "module": "dist/roadmap-builder.es.js",
+  "version": "1.0.0",
+  "description": "A flexible React component for building and displaying interactive roadmaps",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
   "files": [
     "dist"
   ],
-  "exports": {
-    ".": {
-      "import": "./dist/roadmap-builder.es.js",
-      "require": "./dist/roadmap-builder.umd.js"
-    }
-  },
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "lint": "eslint .",
-    "preview": "vite preview"
-  },
-  "peerDependencies": {
-    "react": "^18.0.0 || ^19.0.0",
-    "react-dom": "^18.0.0 || ^19.0.0"
-  },
-  "dependencies": {
-    "prop-types": "^15.8.1"
-  },
-  "devDependencies": {
-    "@eslint/js": "^9.25.0",
-    "@types/react": "^19.1.2",
-    "@types/react-dom": "^19.1.2",
-    "@vitejs/plugin-react": "^4.4.1",
-    "eslint": "^9.25.0",
-    "eslint-plugin-react-hooks": "^5.2.0",
-    "eslint-plugin-react-refresh": "^0.4.19",
-    "globals": "^16.0.0",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
-    "vite": "^6.3.5"
+    "start": "react-scripts start",
+    "build": "rollup -c",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "prepare": "npm run build"
   },
   "keywords": [
     "react",
     "roadmap",
-    "education",
-    "progress",
-    "learning"
+    "roadmap-builder",
+    "interactive",
+    "progress-tracker",
+    "learning-path"
   ],
-  "author": "",
-  "license": "MIT"
+  "author": "Your Name",
+  "license": "MIT",
+  "peerDependencies": {
+    "react": "^16.8.0 || ^17.0.0 || ^18.0.0",
+    "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0",
+    "prop-types": "^15.7.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.18.6",
+    "@babel/preset-env": "^7.18.6",
+    "@babel/preset-react": "^7.18.6",
+    "@rollup/plugin-babel": "^5.3.1",
+    "@rollup/plugin-commonjs": "^22.0.1",
+    "@rollup/plugin-node-resolve": "^13.3.0",
+    "autoprefixer": "^10.4.7",
+    "postcss": "^8.4.14",
+    "rollup": "^2.77.0",
+    "rollup-plugin-peer-deps-external": "^2.2.4",
+    "rollup-plugin-postcss": "^4.0.2",
+    "rollup-plugin-terser": "^7.0.2"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/roadmap-builder"
+  }
 }
