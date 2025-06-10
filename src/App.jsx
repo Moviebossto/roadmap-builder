@@ -1,5 +1,5 @@
-import React from "react";
-import { RoadmapViewer } from "./lib";
+import React, { useState } from "react";
+import { RoadmapViewer, RoadmapBuilder } from "./lib";
 import "./App.css";
 
 // Example completed level component
@@ -16,6 +16,9 @@ const CompletedLevelComponent = ({ content, onClick }) => (
       fontSize: "18px",
       cursor: "pointer",
       boxShadow: "0 0 10px rgba(46, 204, 113, 0.5)",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
     }}
   >
     {content}
@@ -35,6 +38,9 @@ const FutureLevelComponent = ({ content, onClick }) => (
       border: "none",
       fontSize: "18px",
       cursor: "pointer",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
     }}
   >
     {content}
@@ -233,9 +239,11 @@ const CompletedDiagonalLeftDownPathComponent = () => (
 
 function App() {
   const [currentLevel, setCurrentLevel] = React.useState(1);
+  const [showBuilder, setShowBuilder] = useState(false);
+  const [customPositions, setCustomPositions] = useState(null);
 
   // Example roadmap positions with different path types and level content
-  const positions = {
+  const positions = customPositions || {
     "level-1": {
       x: 1,
       y: 0,
@@ -326,6 +334,11 @@ function App() {
     setCurrentLevel(order);
   };
 
+  const handleSavePositions = (newPositions) => {
+    setCustomPositions(newPositions);
+    setShowBuilder(false);
+  };
+
   return (
     <div className="app">
       <h1>Roadmap Builder Example</h1>
@@ -341,51 +354,75 @@ function App() {
         >
           Next Level
         </button>
-      </div>
-      <div className="roadmap-container">
-        <RoadmapViewer
-          matrixWidth={5}
-          matrixHeight={9}
-          positions={positions}
-          pathComponents={pathComponents}
-          completedLevelComponent={<CompletedLevelComponent />}
-          completedPathComponents={completedPathComponents}
-          futureLevelComponent={<FutureLevelComponent />}
-          onLevelClick={handleLevelClick}
-          cellWidth={80}
-          cellHeight={80}
-        />
+        <button onClick={() => setShowBuilder(!showBuilder)}>
+          {showBuilder ? "Hide Builder" : "Show Builder"}
+        </button>
       </div>
 
-      <div className="documentation">
-        <h2>Available Path Types</h2>
-        <div className="orientation-examples">
-          <div className="orientation-example">
-            <h3>Horizontal</h3>
-            <div className="orientation-display">
-              <HorizontalPathComponent />
+      {showBuilder ? (
+        <div className="builder-container">
+          <h2>Roadmap Builder</h2>
+          <RoadmapBuilder
+            initialMatrixWidth={5}
+            initialMatrixHeight={9}
+            initialPositions={positions}
+            pathComponents={pathComponents}
+            completedPathComponents={completedPathComponents}
+            completedLevelComponent={<CompletedLevelComponent />}
+            futureLevelComponent={<FutureLevelComponent />}
+            cellWidth={80}
+            cellHeight={80}
+            onSave={handleSavePositions}
+          />
+        </div>
+      ) : (
+        <div className="roadmap-container">
+          <RoadmapViewer
+            matrixWidth={5}
+            matrixHeight={9}
+            positions={positions}
+            pathComponents={pathComponents}
+            completedLevelComponent={<CompletedLevelComponent />}
+            completedPathComponents={completedPathComponents}
+            futureLevelComponent={<FutureLevelComponent />}
+            onLevelClick={handleLevelClick}
+            cellWidth={80}
+            cellHeight={80}
+          />
+        </div>
+      )}
+
+      {!showBuilder && (
+        <div className="documentation">
+          <h2>Available Path Types</h2>
+          <div className="orientation-examples">
+            <div className="orientation-example">
+              <h3>Horizontal</h3>
+              <div className="orientation-display">
+                <HorizontalPathComponent />
+              </div>
             </div>
-          </div>
-          <div className="orientation-example">
-            <h3>Vertical</h3>
-            <div className="orientation-display">
-              <VerticalPathComponent />
+            <div className="orientation-example">
+              <h3>Vertical</h3>
+              <div className="orientation-display">
+                <VerticalPathComponent />
+              </div>
             </div>
-          </div>
-          <div className="orientation-example">
-            <h3>Diagonal Right Down</h3>
-            <div className="orientation-display">
-              <DiagonalRightDownPathComponent />
+            <div className="orientation-example">
+              <h3>Diagonal Right Down</h3>
+              <div className="orientation-display">
+                <DiagonalRightDownPathComponent />
+              </div>
             </div>
-          </div>
-          <div className="orientation-example">
-            <h3>Diagonal Left Down</h3>
-            <div className="orientation-display">
-              <DiagonalLeftDownPathComponent />
+            <div className="orientation-example">
+              <h3>Diagonal Left Down</h3>
+              <div className="orientation-display">
+                <DiagonalLeftDownPathComponent />
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

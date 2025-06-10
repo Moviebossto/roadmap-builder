@@ -7,7 +7,7 @@ import "./RoadmapViewer.css";
  *
  * Displays a roadmap with levels and paths in a matrix layout.
  */
-const RoadmapViewer = ({
+export const RoadmapViewer = ({
   matrixWidth,
   matrixHeight,
   positions,
@@ -155,5 +155,3 @@ RoadmapViewer.propTypes = {
   futurePathComponents: PropTypes.object,
   onLevelClick: PropTypes.func,
 };
-
-export default RoadmapViewer;

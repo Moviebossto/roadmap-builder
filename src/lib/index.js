@@ -1,1 +1,2 @@
-export { default as RoadmapViewer } from "./RoadmapViewer";
+export { RoadmapViewer } from "./RoadmapViewer";
+export { RoadmapBuilder } from "./RoadmapBuilder";
