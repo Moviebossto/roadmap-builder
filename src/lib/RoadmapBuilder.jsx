@@ -19,7 +19,9 @@ export const RoadmapBuilder = ({
   const [positions, setPositions] = useState(initialPositions);
   const [selectedCell, setSelectedCell] = useState(null);
   const [cellType, setCellType] = useState("level");
-  const [pathType, setPathType] = useState("vertical");
+  const [pathType, setPathType] = useState(
+    Object.keys(pathComponents)[0] || "vertical"
+  );
   const [levelContent, setLevelContent] = useState("");
   const [levelOrder, setLevelOrder] = useState(1);
   const [status, setStatus] = useState("future");
@@ -246,14 +248,12 @@ export const RoadmapBuilder = ({
                       value={pathType}
                       onChange={(e) => setPathType(e.target.value)}
                     >
-                      <option value="horizontal">Horizontal</option>
-                      <option value="vertical">Vertical</option>
-                      <option value="diagonalRightDown">
-                        Diagonal Right Down
-                      </option>
-                      <option value="diagonalLeftDown">
-                        Diagonal Left Down
-                      </option>
+                      {Object.keys(pathComponents).map((type) => (
+                        <option key={type} value={type}>
+                          {type.charAt(0).toUpperCase() +
+                            type.slice(1).replace(/([A-Z])/g, " $1")}
+                        </option>
+                      ))}
                     </select>
                   </label>
                 </div>
