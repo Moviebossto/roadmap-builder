@@ -1,6 +1,6 @@
 {
   "name": "roadmap-builder",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A flexible React component for building and displaying interactive roadmaps",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
