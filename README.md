@@ -210,6 +210,7 @@ function App() {
 | `onLevelClick`            | function | No       | Callback function when a level is clicked, receives level order as parameter |
 | `cellWidth`               | number   | No       | Width of each matrix cell in pixels (default: 100)                           |
 | `cellHeight`              | number   | No       | Height of each matrix cell in pixels (default: 100)                          |
+| `cellGap`                 | number   | No       | Gap between cells in pixels (default: 0)                                     |
 
 ### RoadmapBuilder Props
 
@@ -225,6 +226,7 @@ function App() {
 | `onSave`                  | function | No       | Callback function when positions are saved         |
 | `cellWidth`               | number   | No       | Width of each matrix cell in pixels (default: 80)  |
 | `cellHeight`              | number   | No       | Height of each matrix cell in pixels (default: 80) |
+| `cellGap`                 | number   | No       | Gap between cells in pixels (default: 0)           |
 
 ## Position Object Structure
 

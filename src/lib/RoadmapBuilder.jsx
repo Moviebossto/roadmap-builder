@@ -12,6 +12,7 @@ export const RoadmapBuilder = ({
   futureLevelComponent,
   cellWidth = 80,
   cellHeight = 80,
+  cellGap = 0,
   onSave,
 }) => {
   const [matrixWidth, setMatrixWidth] = useState(initialMatrixWidth);
@@ -25,6 +26,7 @@ export const RoadmapBuilder = ({
   const [levelContent, setLevelContent] = useState("");
   const [levelOrder, setLevelOrder] = useState(1);
   const [status, setStatus] = useState("future");
+  const [gridGap, setGridGap] = useState(cellGap);
 
   // Handle adding or updating a cell
   const handleAddCell = () => {
@@ -138,7 +140,7 @@ export const RoadmapBuilder = ({
         );
       }
       grid.push(
-        <div key={y} style={{ display: "flex" }}>
+        <div key={y} style={{ display: "flex", gap: `${gridGap}px` }}>
           {row}
         </div>
       );
@@ -191,6 +193,17 @@ export const RoadmapBuilder = ({
                 value={matrixHeight}
                 onChange={(e) => setMatrixHeight(Number(e.target.value))}
                 min="1"
+              />
+            </label>
+          </div>
+          <div>
+            <label>
+              Cell Gap:
+              <input
+                type="number"
+                value={gridGap}
+                onChange={(e) => setGridGap(Number(e.target.value))}
+                min="0"
               />
             </label>
           </div>
@@ -303,6 +316,7 @@ export const RoadmapBuilder = ({
             futureLevelComponent={futureLevelComponent}
             cellWidth={cellWidth}
             cellHeight={cellHeight}
+            cellGap={gridGap}
           />
         </div>
       </div>

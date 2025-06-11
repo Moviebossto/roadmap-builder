@@ -372,6 +372,7 @@ function App() {
             futureLevelComponent={<FutureLevelComponent />}
             cellWidth={80}
             cellHeight={80}
+            cellGap={5}
             onSave={handleSavePositions}
           />
         </div>
@@ -388,6 +389,7 @@ function App() {
             onLevelClick={handleLevelClick}
             cellWidth={80}
             cellHeight={80}
+            cellGap={5}
           />
         </div>
       )}

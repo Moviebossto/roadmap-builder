@@ -15,6 +15,7 @@ export const RoadmapViewer = ({
   pathComponents,
   cellWidth = 100,
   cellHeight = 100,
+  cellGap = 0,
   completedLevelComponent,
   completedPathComponents,
   futureLevelComponent,
@@ -123,6 +124,7 @@ export const RoadmapViewer = ({
         style={{
           gridTemplateColumns: `repeat(${matrixWidth}, ${cellWidth}px)`,
           gridTemplateRows: `repeat(${matrixHeight}, ${cellHeight}px)`,
+          gap: `${cellGap}px`,
         }}
       >
         {matrix.flatMap((row, y) =>
@@ -149,6 +151,7 @@ RoadmapViewer.propTypes = {
   pathComponents: PropTypes.object,
   cellWidth: PropTypes.number,
   cellHeight: PropTypes.number,
+  cellGap: PropTypes.number,
   completedLevelComponent: PropTypes.element,
   completedPathComponents: PropTypes.object,
   futureLevelComponent: PropTypes.element,
